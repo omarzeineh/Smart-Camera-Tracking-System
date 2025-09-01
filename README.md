@@ -1,64 +1,62 @@
-# Smart Camera Tracking System
+# Smart Camera Tracking with Particle Filter and PID Control
 
-This repository contains MATLAB implementations for a **Smart Camera Tracking System** that combines **motion detection**, **object tracking**, and **particle filtering** with hardware control via **Arduino and servo motors**. The system is designed to detect, track, and follow a moving target in real-time using computer vision and control algorithms.
+This project implements a **smart camera tracking system** in MATLAB, capable of detecting, tracking, and following a moving object in real-time. The system combines **motion-based detection**, **Kalman filters**, **particle filtering**, and **PID-controlled servo motors** via Arduino to keep the target centered in view.
 
----
+## Overview
 
-## 📖 Overview
-This project integrates **motion-based tracking**, **Kalman filters**, and **particle filters** to build a robust smart camera system. The software runs in MATLAB, processes live video input from a webcam, and uses a **PID controller** to control Arduino-connected servo motors. The system ensures that the camera automatically follows moving targets and keeps them centered in the frame.  
+- **Tracks moving objects in video** using background subtraction and blob analysis.  
+- **Maintains identity** across frames with Kalman filters.  
+- **Switches to particle filtering** with histogram similarity for robust tracking, even when the camera itself moves.  
+- **Controls servo motors** (pan/tilt) through Arduino using a PID feedback loop.  
+- **Provides visual feedback** with ROI display and overlayed particle positions.  
 
-### Key Features
-- Motion detection with background subtraction  
-- Kalman filter for multi-object tracking  
-- Particle filter with histogram-based likelihood for robust tracking during camera motion  
-- PID-based camera control with servo motors  
-- Real-time visualization with bounding boxes, ROI display, and particle overlays  
+This work extends and integrates existing MATLAB examples and demos into a full **real-time vision + hardware system**.
 
----
+## Sources and References
 
-## 📂 Repository Contents
-- **`particles/`**  
-  Contains files related to the **particle filter** implementation.  
-  Based on [Simple Particle Filter Demo](https://www.mathworks.com/matlabcentral/fileexchange/33666-simple-particle-filter-demo), but with major modifications:
-  - Particle initialization constrained to object ROI for faster convergence  
-  - Numerical stability improvements in log-likelihood calculations  
-  - Updated resampling method using cumulative sums for robustness  
+- Particle filter base code inspired by: [Simple Particle Filter Demo](https://www.mathworks.com/matlabcentral/fileexchange/33666-simple-particle-filter-demo)  
+  - **Modifications:** Reworked initialization (`create_particles` only around ROI), stabilized likelihood function, improved resampling with `cumsum` approach, and added histogram normalization.
 
-- **`tracks/`**  
-  Contains files for the **object tracking system**.  
-  Adapted from [Motion-Based Multiple Object Tracking](https://www.mathworks.com/help/vision/ug/motion-based-multiple-object-tracking.html) with changes:
-  - Added support for custom function arguments  
-  - Tuned morphological operations for noise removal  
-  - Adjusted Kalman filter thresholds for stability  
+- Motion-based multi-object tracking adapted from: [Motion-Based Multiple Object Tracking](https://www.mathworks.com/help/vision/ug/motion-based-multiple-object-tracking.html)  
+  - **Modifications:** Added function arguments for flexibility, fine-tuned morphological operations (`imopen`, `imclose`, `imfill`), adjusted Kalman filter thresholds, and enhanced track management logic.
 
-- **`histogram-distances/`**  
-  Includes distance functions from [Histogram Distances](https://www.mathworks.com/matlabcentral/fileexchange/39275-histogram-distances) for computing similarity measures between color histograms (e.g., Chi-square).  
+- Histogram comparison methods from: [Histogram Distances](https://www.mathworks.com/matlabcentral/fileexchange/39275-histogram-distances)  
+  - Used for robust color histogram similarity (chi-square distance).
 
----
+## Key Features
 
-## ⚙️ System Design
-The tracking system consists of three major stages:
-1. **Detection** – Foreground detection using Gaussian Mixture Models and blob analysis  
-2. **Tracking** – Transition from Kalman filter multi-object tracking to a single-object **particle filter**  
-3. **Control** – A PID controller computes positional error and drives servo motors via Arduino to center the object  
+- **Detection Phase:**  
+  - Foreground detection with Gaussian Mixture Models.  
+  - Noise removal with tuned morphological operators.  
+  - Custom filtering of blobs by minimum area.  
 
-Fail-safe mechanisms ensure reinitialization if tracking confidence drops, making the system robust against occlusion and sudden movement.
+- **Tracking Phase:**  
+  - Multi-object tracking using Kalman filters.  
+  - Transition to particle filter once track is reliable.  
+  - Histogram-based likelihood evaluation with resampling.
 
----
+- **Camera Control:**  
+  - PID controller computes error between object center and frame center.  
+  - Arduino writes servo positions (`writePosition`) with safety clamping.  
+  - Supports ±90° pan and ±30° tilt.  
 
-## 🧪 Experimental Results
-Four main tests were conducted:
-1. **Motion Detection in Static Background** – Accurate detection of moving persons  
-2. **Particle Filter Tracking with Camera Motion** – Reliable tracking during manual camera movement  
-3. **PID Camera Adjustment** – Smooth and responsive servo motion with tuned PID gains  
-4. **Full System Integration** – Combined detection, tracking, and control, achieving real-time tracking with minor lag during abrupt movement  
+- **System Robustness:**  
+  - Automatic reinitialization when tracking confidence drops.  
+  - ROI visualization before filter lock-in.  
+  - Dual video players for debugging and demonstration.  
 
-All tests passed with acceptable accuracy and stability.  
+## Hardware Setup
 
----
+- **Webcam** for video input.  
+- **Arduino Uno** with two servo motors on a pan-tilt rig.  
+- **MATLAB Arduino Support Package** for servo control.  
+- Manual calibration of servo limits to avoid mechanical stress.  
 
-## 🔗 References
-- [Simple Particle Filter Demo](https://www.mathworks.com/matlabcentral/fileexchange/33666-simple-particle-filter-demo)  
-- [Motion-Based Multiple Object Tracking](https://www.mathworks.com/help/vision/ug/motion-based-multiple-object-tracking.html)  
-- [Histogram Distances](https://www.mathworks.com/matlabcentral/fileexchange/39275-histogram-distances)  
+## Testing
+
+- **Motion Detection:** Successful bounding box detection in static backgrounds.  
+- **Particle Filtering:** Maintained tracking accuracy during camera movement.  
+- **PID Control:** Smooth servo adjustments keeping subject centered.  
+- **Full Integration:** Reliable end-to-end performance with minor jitter under fast motion.  
+
 
