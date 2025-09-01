@@ -62,10 +62,3 @@ All tests passed with acceptable accuracy and stability.
 - [Motion-Based Multiple Object Tracking](https://www.mathworks.com/help/vision/ug/motion-based-multiple-object-tracking.html)  
 - [Histogram Distances](https://www.mathworks.com/matlabcentral/fileexchange/39275-histogram-distances)  
 
----
-
-## 🚀 Future Work
-- Integrate deep learning-based object detection for improved robustness  
-- Add automatic re-calibration for recovery during occlusion  
-- Explore depth cameras for higher tracking accuracy  
-- Optimize PID tuning for smoother servo responses  
