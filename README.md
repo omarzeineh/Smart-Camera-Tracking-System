@@ -18,7 +18,7 @@ This work extends and integrates existing MATLAB examples and demos into a full 
   - **Modifications:** Reworked initialization (`create_particles` only around ROI), stabilized likelihood function, improved resampling with `cumsum` approach, and added histogram normalization.
 
 - Motion-based multi-object tracking adapted from: [Motion-Based Multiple Object Tracking](https://www.mathworks.com/help/vision/ug/motion-based-multiple-object-tracking.html)  
-  - **Modifications:** Added function arguments for flexibility, fine-tuned morphological operations (`imopen`, `imclose`, `imfill`), adjusted Kalman filter thresholds, and enhanced track management logic.
+  - **Modifications:** Added function arguments for flexibility.
 
 - Histogram comparison methods from: [Histogram Distances](https://www.mathworks.com/matlabcentral/fileexchange/39275-histogram-distances)  
   - Used for robust color histogram similarity (chi-square distance).
